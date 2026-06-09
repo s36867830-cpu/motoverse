@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoVerse Prime | Brand Selection Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap');
+
+        :root {
+            --primary: #00e5ff; /* Cyan Electric Accent */
+            --bg-main: #0a0b0d;
+            --surface: #14161d;
+            --surface-card: #1c1f2a;
+            --text-main: #ffffff;
+            --text-muted: #8e94a5;
+            --tag-petrol: #ff9100;
+            --tag-ev: #00e676;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* --- STICKY NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 6%;
+            background: rgba(10, 11, 13, 0.95);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-container input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 15px 10px 40px;
+            color: white;
+            border-radius: 30px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: var(--text-muted);
+        }
+
+        /* --- CONTROLS HEADER SECTION --- */
+        .dashboard-header {
+            margin-top: 120px;
+            padding: 0 6%;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            font-size: 38px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .dashboard-header p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* --- BRAND SELECTION COMPONENT --- */
+        .brand-hub-card {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 0 6% 40px 6%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .brand-hub-card h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .brand-node {
+            background: var(--surface-card);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .brand-node i {
+            font-size: 22px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .brand-node span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .brand-node:hover, .brand-node.active {
+            border-color: var(--primary);
+            background: rgba(0, 229, 255, 0.05);
+            transform: scale(1.03);
+        }
+
+        .brand-node:hover i, .brand-node.active i {
+            color: var(--primary);
+        }
+
+        /* Category Sub-Tabs */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            background: var(--surface);
+            padding: 10px;
+            border-radius: 40px;
+            width: max-content;
+            margin: 0 auto 40px auto;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary);
+            color: #000000;
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
+        }
+
+        /* --- DYNAMIC BIKE GRID --- */
+        .catalog-container {
+            padding: 0 6%;
+        }
+
+        .bike-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        /* Card Architecture */
+        .bike-card {
+            background: var(--surface-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .bike-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            border-color: rgba(0, 229, 255, 0.2);
+        }
+
+        .card-visual-frame {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            background: #1a1c23;
+        }
+
+        .card-visual-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .bike-card:hover .card-visual-frame img {
+            transform: scale(1.08);
+        }
+
+        /* Labels / Badges */
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 2;
+        }
+
+        .engine-type-tag {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--tag-petrol);
+            color: #000;
+            z-index: 2;
+        }
+
+        .engine-type-tag.ev {
+            background: var(--tag-ev);
+        }
+
+        /* Info Section */
+        .card-details {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-details h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .brand-line {
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .specs-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .spec-node {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spec-node i {
+            color: var(--primary);
+            width: 14px;
+            text-align: center;
+        }
+
+        .price-row {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 15px;
+        }
+
+        .price-lbl {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .price-val {
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* --- DIALOG MODAL (DETAILS POPUP) --- */
+        .info-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 7, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .info-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-body {
+            background: var(--surface);
+            width: 90%;
+            max-width: 550px;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 22px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .modal-body h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .modal-desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 20px;
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-left: 3px solid var(--primary);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Moto<span>Verse</span></div>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchField" placeholder="Search machine or model..." oninput="filterData()">
+        </div>
+    </nav>
+
+    <header class="dashboard-header">
+        <h1>Comprehensive Automotive Showroom</h1>
+        <p>Live High-Res Previews, power configurations, and current Indian market pricing details.</p>
+    </header>
+
+    <section class="brand-hub-card">
+        <h2><i class="fa-solid fa-industry"></i> Choose Manufacturer</h2>
+        <div class="brand-grid" id="brandGrid">
+            </div>
+    </section>
+
+    <div class="filter-tabs">
+        <button class="tab-btn active" data-type="all" onclick="filterType('all')">All Vehicle Types</button>
+        <button class="tab-btn" data-type="petrol-bike" onclick="filterType('petrol-bike')">Petrol Bikes</button>
+        <button class="tab-btn" data-type="ev-bike" onclick="filterType('ev-bike')">EV Bikes</button>
+        <button class="tab-btn" data-type="scooter" onclick="filterType('scooter')">Scooters</button>
+    </div>
+
+    <main class="catalog-container">
+        <div class="bike-grid" id="catalogGrid">
+            </div>
+    </main>
+
+    <div class="info-modal" id="specModal">
+        <div class="modal-body">
+            <i class="fa-solid fa-xmark close-btn" onclick="closeModal()"></i>
+            <span class="brand-line" id="modalBrand">BRAND</span>
+            <h2 id="modalTitle">Machine Model Name</h2>
+            <div id="modalSpecs" class="specs-table" style="margin-top: 20px;">
+                </div>
+            <p class="modal-desc" id="modalDesc">Detailed engine configurations and structural summaries appear here.</p>
+        </div>
+    </div>
+
+    <script>
+        // Full Dataset mapping exactly 35 distinct automotive models
+        const bikeDatabase = [
+            { id: 1, name: "Continental GT 650", brand: "Royal Enfield", type: "petrol", category: "petrol-bike", timeline: "Café Racer", power: "47 HP", engine: "648 cc", rangeSpeed: "169 km/h", weight: "211 kg", price: "₹3,53,000", image: "https://images.unsplash.com/photo-1695662363013-1491cf3bc9e6?auto=format&fit=crop&w=600&q=80", desc: "Authentic parallel-twin café racer delivering raw mid-range torque and a legendary aggressive posture." },
+            { id: 2, name: "Ninja ZX-10R", brand: "Kawasaki", type: "petrol", category: "petrol-bike", timeline: "Superbike", power: "203 HP", engine: "998 cc Inline-4", rangeSpeed: "299 km/h", weight: "207 kg", price: "₹16,79,000", image: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=600&q=80", desc: "WorldSBK championship-derived engineering built for extreme track precision and high RPM velocity." },
+            { id: 3, name: "Duke 390 ABS", brand: "KTM", type: "petrol", category: "petrol-bike", timeline: "Naked Sport", power: "46 HP", engine: "399 cc Liquid", rangeSpeed: "160 km/h", weight: "165 kg", price: "₹3,11,000", image: "https://images.unsplash.com/photo-1622185135505-2d795003994a?auto=format&fit=crop&w=600&q=80", desc: "A corner rocket fitted with advanced electronics, ride-by-wire, cornering ABS, and sharp street handling." },
+            { id: 4, name: "Himalayan 450", brand: "Royal Enfield", type: "petrol", category: "petrol-bike", timeline: "Adventure", power: "40 HP", engine: "452 cc Liquid", rangeSpeed: "145 km/h", weight: "196 kg", price: "₹2,85,000", image: "https://images.unsplash.com/photo-1695662362879-14a04fa71cb8?auto=format&fit=crop&w=600&q=80", desc: "Built for all terrains featuring the high-performance Sherpa liquid-cooled engine block and long-travel off-road suspension." },
+            { id: 5, name: "Apache RTR 310", brand: "TVS", type: "petrol", category: "petrol-bike", timeline: "Naked Sport", power: "35.6 HP", engine: "312.2 cc", rangeSpeed: "150 km/h", weight: "169 kg", price: "₹2,43,000", image: "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?auto=format&fit=crop&w=600&q=80", desc: "Hyper-naked design packed with climate-controlled seats, dynamic stability control, and aggressive street aesthetics." },
+            { id: 6, name: "MT-15 V2", brand: "Yamaha", type: "petrol", category: "petrol-bike", timeline: "Streetfighter", power: "18.4 HP", engine: "155 cc VVA", rangeSpeed: "130 km/h", weight: "141 kg", price: "₹1,68,000", image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=600&q=80", desc: "The Dark Warrior featuring variable valve actuation (VVA) for optimized low-end punch and high fuel economy." },
+            { id: 7, name: "R15 V4", brand: "Yamaha", type: "petrol", category: "petrol-bike", timeline: "Track Sport", power: "18.4 HP", engine: "155 cc VVA", rangeSpeed: "140 km/h", weight: "142 kg", price: "₹1,82,000", image: "https://images.unsplash.com/photo-1635073908681-9b1698246e72?auto=format&fit=crop&w=600&q=80", desc: "Entry-level supersport with aerodynamic fairings, traction control, and an optional quick-shifter system." },
+            { id: 8, name: "Speed 400", brand: "Triumph", type: "petrol", category: "petrol-bike", timeline: "Modern Classic", power: "40 HP", engine: "398 cc Liquid", rangeSpeed: "145 km/h", weight: "176 kg", price: "₹2,33,000", image: "https://images.unsplash.com/photo-1615172282427-9a57ef2d142e?auto=format&fit=crop&w=600&q=80", desc: "Premium British roadster engineering brought into an agile, elegant classic platform with flat torque delivery." },
+            { id: 9, name: "Splendor Plus i3S", brand: "Hero MotoCorp", type: "petrol", category: "petrol-bike", timeline: "Commuter", power: "8 HP", engine: "97.2 cc Sloper", rangeSpeed: "90 km/h", weight: "112 kg", price: "₹75,400", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=600&q=80", desc: "The undisputed global standard for ultimate durability and unmatched daily mileage economy." },
+            { id: 10, name: "Xpulse 200T 4V", brand: "Hero", type: "petrol", category: "petrol-bike", timeline: "Dual Sport", power: "19.1 HP", engine: "199.6 cc Oil", rangeSpeed: "120 km/h", weight: "158 kg", price: "₹1,46,000", image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=600&q=80", desc: "High ground-clearance dual-sport motorcycle tailored specifically for rugged dirt tracks and urban potholes." },
+            { id: 11, name: "Hayabusa GSX1300R", brand: "Suzuki", type: "petrol", category: "petrol-bike", timeline: "Hyper-Tourer", power: "190 HP", engine: "1340 cc Inline", rangeSpeed: "299 km/h", weight: "264 kg", price: "₹16,90,000", image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80", desc: "The legendary cross-country cruise missile with elite aerodynamics and unparalleled highway stability." },
+            { id: 12, name: "CB350 H'ness", brand: "Honda", type: "petrol", category: "petrol-bike", timeline: "Cruiser", power: "21 HP", engine: "348 cc Air", rangeSpeed: "130 km/h", weight: "181 kg", price: "₹2,09,800", image: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=600&q=80", desc: "Refined vintage roadster offering a smooth thumping engine note and selectable torque control maps." },
+            { id: 13, name: "G 310 RR", brand: "BMW", type: "petrol", category: "petrol-bike", timeline: "Sport Fairing", power: "34 HP", engine: "313 cc Reverse", rangeSpeed: "160 km/h", weight: "174 kg", price: "₹3,00,000", image: "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=600&q=80", desc: "Track-focused sportbike offering full digital telemetry modes and premium global styling languages." },
+            { id: 14, name: "Pulsar NS200", brand: "Bajaj", type: "petrol", category: "petrol-bike", timeline: "Naked Street", power: "24.5 HP", engine: "199.5 cc Spark", rangeSpeed: "136 km/h", weight: "158 kg", price: "₹1,58,000", image: "https://images.unsplash.com/photo-1539601170291-5b885b27f14e?auto=format&fit=crop&w=600&q=80", desc: "Perennial perimeter-frame street icon running on triple-spark plug ignition architecture for sharp acceleration." },
+            { id: 15, name: "Gixxer SF 250", brand: "Suzuki", type: "petrol", category: "petrol-bike", timeline: "Sports Tourer", power: "26.5 HP", engine: "249 cc Oil", rangeSpeed: "150 km/h", weight: "161 kg", price: "₹1,92,000", image: "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=600&q=80", desc: "Advanced oil-cooled motor providing high-speed touring stability across massive highway distances." },
+            { id: 16, name: "Bullet 350", brand: "Royal Enfield", type: "petrol", category: "petrol-bike", timeline: "Heritage", power: "20.2 HP", engine: "349 cc J-Series", rangeSpeed: "114 km/h", weight: "195 kg", price: "₹1,73,000", image: "https://images.unsplash.com/photo-1610217036326-805ff9ffdf9d?auto=format&fit=crop&w=600&q=80", desc: "A living icon modernized with the highly smooth J-Series counter-balanced engine while retaining its raw heritage." },
+            { id: 17, name: "Dominar 400", brand: "Bajaj", type: "petrol", category: "petrol-bike", timeline: "Hyper-Tourer", power: "40 HP", engine: "373.3 cc DOHC", rangeSpeed: "156 km/h", weight: "193 kg", price: "₹2,32,000", image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80", desc: "Heavy-duty sports tourer factory-equipped with touring visors, engine guards, and tall clip-ons." },
+            { id: 18, name: "Ronin 225", brand: "TVS", type: "petrol", category: "petrol-bike", timeline: "Scrambler", power: "20.4 HP", engine: "225.9 cc Oil", rangeSpeed: "120 km/h", weight: "160 kg", price: "₹1,49,000", image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=600&q=80", desc: "Uniquely voiced urban scrambler built with glide-through traffic technology and square block tires." },
+            { id: 19, name: "Jawa 350 Classic", brand: "Jawa", type: "petrol", category: "petrol-bike", timeline: "Classic Retro", power: "22.5 HP", engine: "334 cc Liquid", rangeSpeed: "125 km/h", weight: "194 kg", price: "₹2,15,000", image: "https://images.unsplash.com/photo-1539601170291-5b885b27f14e?auto=format&fit=crop&w=600&q=80", desc: "Polished classic cruiser featuring a dual exhaust array and authentic 1960s aesthetic geometry." },
+            { id: 20, name: "Raider 125", brand: "TVS", type: "petrol", category: "petrol-bike", timeline: "Premium Commuter", power: "11.3 HP", engine: "124.8 cc 3V", rangeSpeed: "99 km/h", weight: "123 kg", price: "₹97,000", image: "https://images.unsplash.com/photo-1625043484550-fa44c5db2984?auto=format&fit=crop&w=600&q=80", desc: "Smart sports commuter coming with a reverse LCD instrument deck and specialized Eco/Power riding profiles." },
+
+            { id: 21, name: "F77 Mach 2", brand: "Ultraviolette", type: "ev", category: "ev-bike", timeline: "EV Performance", power: "30 kW Peak", engine: "10.3 kWh Pack", rangeSpeed: "323 km Range", weight: "207 kg", price: "₹3,99,000", image: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&w=600&q=80", desc: "High-voltage electric fighter rocket boasting aerospace construction protocols and advanced safety suites." },
+            { id: 22, name: "RV400 BRZ", brand: "Revolt", type: "ev", category: "ev-bike", timeline: "EV Commuter", power: "3 kW Motor", engine: "3.24 kWh Bat", rangeSpeed: "150 km Range", weight: "108 kg", price: "₹1,42,000", image: "https://images.unsplash.com/photo-1542362567-b07eac790947?auto=format&fit=crop&w=600&q=80", desc: "Clean belt-driven street machine swapping traditional setups for quick-swap batteries and customizable acoustic hums." },
+            { id: 23, name: "Kratos R", brand: "Tork Motors", type: "ev", category: "ev-bike", timeline: "EV Naked Bike", power: "9 kW Peak", engine: "4 kWh Battery", rangeSpeed: "180 km Range", weight: "140 kg", price: "₹1,49,999", image: "https://images.unsplash.com/photo-1609533315877-c3f180536ec0?auto=format&fit=crop&w=600&q=80", desc: "Features an axial flux electric motor platform delivering high heat dissipation and responsive throttle mappings." },
+            { id: 24, name: "Matter AERA 5000", brand: "Matter Energy", type: "ev", category: "ev-bike", timeline: "EV Geared", power: "10 kW Peak", engine: "5 kWh Liquid", rangeSpeed: "125 km Range", weight: "150 kg", price: "₹1,73,000", image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=600&q=80", desc: "India's first electric bike to integrate a 4-speed manual gearbox along with a fully liquid-cooled battery assembly." },
+            { id: 25, name: "Prana Grand", brand: "SVM Motors", type: "ev", category: "ev-bike", timeline: "EV Sport Bike", power: "7.2 kW Peak", engine: "4.3 kWh Lith", rangeSpeed: "123 km/h Top", weight: "165 kg", price: "₹2,25,000", image: "https://images.unsplash.com/photo-1622185135505-2d795003994a?auto=format&fit=crop&w=600&q=80", desc: "An aggressive naked sports styling profile engineered to deliver zero-emission rapid highway commuter runs." },
+
+            { id: 26, name: "S1 Pro Gen 3", brand: "Ola Electric", type: "ev", category: "scooter", timeline: "EV Scooter", power: "11 kW Peak", engine: "4 kWh Battery", rangeSpeed: "242 km Range", weight: "113 kg", price: "₹1,49,860", image: "https://images.unsplash.com/photo-1695066367375-7bdf7592cfb3?auto=format&fit=crop&w=600&q=80", desc: "High-velocity modern hyper-scooter engineered with updated battery software architecture and responsive multi-touch telemetry." },
+            { id: 27, name: "450X Apex", brand: "Ather Energy", type: "ev", category: "scooter", timeline: "EV Scooter", power: "7 kW Peak", engine: "3.7 kWh Battery", rangeSpeed: "157 km Range", weight: "111 kg", price: "₹1,75,000", image: "https://images.unsplash.com/photo-1688649875027-e4368c850efc?auto=format&fit=crop&w=600&q=80", desc: "Transparent side panels meet Warp+ acceleration profiles and advanced closed-loop regenerative braking mechanics." },
+            { id: 28, name: "Activa 6G Smart", brand: "Honda", type: "petrol", category: "scooter", timeline: "Petrol Scooter", power: "7.8 HP", engine: "109.5 cc eSP", rangeSpeed: "85 km/h", weight: "105 kg", price: "₹82,000", image: "https://images.unsplash.com/photo-1611245367676-cb82390a36bc?auto=format&fit=crop&w=600&q=80", desc: "The baseline icon of urban transport, upgraded with keyless smart-fob architecture and silent electronic starters." },
+            { id: 29, name: "iQube ST", brand: "TVS", type: "ev", category: "scooter", timeline: "EV Scooter", power: "4.4 kW Peak", engine: "5.1 kWh Battery", rangeSpeed: "150 km Range", weight: "128 kg", price: "₹1,55,000", image: "https://images.unsplash.com/photo-1695066367469-6d60ca5f7f34?auto=format&fit=crop&w=600&q=80", desc: "Vast touch-screen dashboard instrumentation matched with extensive structural frame cargo payload configurations." },
+            { id: 30, name: "Ntorq 125 Race", brand: "TVS", type: "petrol", category: "scooter", timeline: "Petrol Scooter", power: "10.2 HP", engine: "124.8 cc 3V", rangeSpeed: "98 km/h", weight: "116 kg", price: "₹97,500", image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=600&q=80", desc: "Performance petrol scooter boasting dual ride mappings (Street/Race) and advanced lap telemetry options." },
+            { id: 31, name: "Chetak Premium", brand: "Bajaj", type: "ev", category: "scooter", timeline: "EV Scooter", power: "4.2 kW Motor", engine: "3.2 kWh Battery", rangeSpeed: "126 km Range", weight: "134 kg", price: "₹1,35,000", image: "https://images.unsplash.com/photo-1695066367432-8418ff89c621?auto=format&fit=crop&w=600&q=80", desc: "A timeless steel shell configuration completely insulating weather-proof electrical nodes with premium elegance." },
+            { id: 32, name: "River Indie", brand: "River", type: "ev", category: "scooter", timeline: "EV Scooter", power: "6.7 kW Peak", engine: "4 kWh Battery", rangeSpeed: "120 km Range", weight: "140 kg", price: "₹1,38,000", image: "https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=600&q=80", desc: "Nicknamed the SUV of scooters. Offers dual front hooks, hard mount pannier tracks, and large-diameter stability wheels." },
+            { id: 33, name: "Burgman Street", brand: "Suzuki", type: "petrol", category: "scooter", timeline: "Petrol Scooter", power: "8.7 HP", engine: "124 cc SEP", rangeSpeed: "90 km/h", weight: "111 kg", price: "₹97,000", image: "https://images.unsplash.com/photo-1611245367676-cb82390a36bc?auto=format&fit=crop&w=600&q=80", desc: "Premium maxi-styled design delivering an expansive footboard floor, tall wind screens, and luxurious ergonomics." },
+            { id: 34, name: "Jupiter 125", brand: "TVS", type: "petrol", category: "scooter", timeline: "Petrol Scooter", power: "8.2 HP", engine: "124.8 cc", rangeSpeed: "95 km/h", weight: "108 kg", price: "₹96,000", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=600&q=80", desc: "Relocates the fuel canister directly under the floorboards to clear an industry-leading multi-helmet underseat cargo bay." },
+            { id: 35, name: "Aerox 155 VVA", brand: "Yamaha", type: "petrol", category: "scooter", timeline: "Petrol Scooter", power: "15 HP", engine: "155 cc Liquid", rangeSpeed: "120 km/h", weight: "126 kg", price: "₹1,49,000", image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=600&q=80", desc: "Pure motorcycle DNA forged directly into a step-through scooter layout featuring liquid-cooled variable valve actuation." }
+        ];
+
+        // System State Tracking Variable Nodes
+        let currentSelectedBrand = "ALL";
+        let currentSelectedType = "all";
+
+        // Generate dynamic company selection items from the product database array
+        function setupBrandSelector() {
+            const grid = document.getElementById('brandGrid');
+            
+            // Extract and map all individual unique manufacturer names
+            const brands = ["ALL", ...new Set(bikeDatabase.map(item => item.brand))];
+            
+            grid.innerHTML = "";
+            brands.forEach(brand => {
+                const totalModels = brand === "ALL" ? bikeDatabase.length : bikeDatabase.filter(item => item.brand === brand).length;
+                const node = document.createElement('div');
+                node.className = `brand-node ${brand === "ALL" ? "active" : ""}`;
+                node.setAttribute('data-brand', brand);
+                node.onclick = () => selectBrand(brand);
+                
+                // Map basic visual typography markers
+                let iconClass = "fa-solid fa-motorcycle";
+                if (brand === "ALL") iconClass = "fa-solid fa-border-all";
+                else if (["Ola Electric", "Ather Energy", "Ultraviolette", "Revolt", "Tork Motors", "Matter Energy", "River", "SVM Motors"].includes(brand)) {
+                    iconClass = "fa-solid fa-charging-station";
+                }
+
+                node.innerHTML = `
+                    <i class="${iconClass}"></i>
+                    <span>${brand}</span>
+                    <small style="color: var(--text-muted); font-size:10px;">${totalModels} Models</small>
+                `;
+                grid.appendChild(node);
+            });
+        }
+
+        // Action routing pipeline when user selects a specific manufacturer card node
+        function selectBrand(brand) {
+            currentSelectedBrand = brand;
+            
+            // Re-render structural visual node active frames
+            document.querySelectorAll('.brand-node').forEach(node => {
+                if(node.getAttribute('data-brand') === brand) node.classList.add('active');
+                else node.classList.remove('active');
+            });
+
+            filterData();
+        }
+
+        // Action routing pipeline when user switches vehicle configurations
+        function filterType(categoryType) {
+            currentSelectedType = categoryType;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.getAttribute('data-type') === categoryType) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            filterData();
+        }
+
+        // Combined data compilation matrix filtering by Brand, Category Type, and Text Query inputs
+        function filterData() {
+            const searchQuery = document.getElementById('searchField').value.toLowerCase();
+
+            const compiledOutput = bikeDatabase.filter(item => {
+                const matchBrand = (currentSelectedBrand === "ALL") || (item.brand === currentSelectedBrand);
+                const matchType = (currentSelectedType === "all") || (item.category === currentSelectedType);
+                const matchText = item.name.toLowerCase().includes(searchQuery) || item.brand.toLowerCase().includes(searchQuery);
+
+                return matchBrand && matchType && matchText;
+            });
+
+            renderGrid(compiledOutput);
+        }
+
+        // Layout compiler mapping array values onto the catalog viewport layout grid
+        function renderGrid(items) {
+            const container = document.getElementById('catalogGrid');
+            container.innerHTML = ""; 
+
+            if (items.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">No vehicles match the selected criteria.</p>`;
+                return;
+            }
+
+            items.forEach(bike => {
+                const isEv = bike.type === 'ev';
+                const card = document.createElement('div');
+                card.className = "bike-card";
+                card.innerHTML = `
+                    <div class="card-visual-frame">
+                        <span class="status-badge">${bike.timeline}</span>
+                        <span class="engine-type-tag ${isEv ? 'ev' : ''}">${bike.type.toUpperCase()}</span>
+                        <img src="${bike.image}" alt="${bike.name}" loading="lazy">
+                    </div>
+                    <div class="card-details">
+                        <span class="brand-line">${bike.brand}</span>
+                        <h3>${bike.name}</h3>
+                        <div class="specs-table">
+                            <div class="spec-node"><i class="fa-solid fa-bolt"></i> ${bike.power}</div>
+                            <div class="spec-node"><i class="fa-solid fa-microchip"></i> ${bike.engine}</div>
+                            <div class="spec-node"><i class="fa-solid fa-gauge-high"></i> ${bike.rangeSpeed}</div>
+                            <div class="spec-node"><i class="fa-solid fa-weight-hanging"></i> ${bike.weight}</div>
+                        </div>
+                        <div class="price-row">
+                            <div>
+                                <div class="price-lbl">Estimated Price</div>
+                                <div class="price-val">${bike.price}</div>
+                            </div>
+                            <button class="tab-btn" style="padding: 6px 16px; font-size:11px;" onclick="viewFullSpecs(${bike.id})">Specs</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Detailed overlay dialog viewer activation routine
+        function viewFullSpecs(id) {
+            const bike = bikeDatabase.find(b => b.id === id);
+            if(!bike) return;
+
+            document.getElementById('modalBrand').innerText = bike.brand;
+            document.getElementById('modalTitle').innerText = bike.name;
+            document.getElementById('modalDesc').innerText = bike.desc;
+
+            document.getElementById('modalSpecs').innerHTML = `
+                <div class="spec-node"><i class="fa-solid fa-bolt"></i> <strong>Power Output:</strong> ${bike.power}</div>
+                <div class="spec-node"><i class="fa-solid fa-gears"></i> <strong>Engine/Battery:</strong> ${bike.engine}</div>
+                <div class="spec-node"><i class="fa-solid fa-gauge-high"></i> <strong>Top Speed/Range:</strong> ${bike.rangeSpeed}</div>
+                <div class="spec-node"><i class="fa-solid fa-weight-hanging"></i> <strong>Kerb Weight:</strong> ${bike.weight}</div>
+                <div class="spec-node"><i class="fa-solid fa-indian-rupee-sign"></i> <strong>Ex-Showroom:</strong> ${bike.price}</div>
+                <div class="spec-node"><i class="fa-solid fa-tags"></i> <strong>Segment Type:</strong> ${bike.timeline}</div>
+            `;
+
+            document.getElementById('specModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('specModal').classList.remove('active');
+        }
+
+        // Initialization Pipeline Routine calls
+        setupBrandSelector();
+        renderGrid(bikeDatabase);
+    </script>
+</body>
+</html>
